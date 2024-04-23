@@ -5,6 +5,7 @@
 #include "../eeprom_map.h"
 #include "../eeprom.h"
 #include "../screen.h"
+#include "../audio.h"
 #include "../states.h"
 #include "../rand.h"
 #include "../utils.h"
@@ -67,6 +68,7 @@ static void switch_substate(pw_state_t *s, uint8_t new) {
 static void move_cursor(pw_state_t *s, int8_t m) {
     s->dowsing.previous_cursor = s->dowsing.current_cursor;
     s->dowsing.current_cursor += m;
+    pw_audio_play_sound(SOUND_CURSOR_MOVE);
 
     if(s->dowsing.current_cursor > 5) s->dowsing.current_cursor = 5;
     else if(s->dowsing.current_cursor < 0) s->dowsing.current_cursor = 0;
@@ -429,7 +431,9 @@ void pw_dowsing_event_loop(pw_state_t *s, pw_state_t *p, const screen_flags_t *s
         if(item_pos & s->dowsing.chosen_positions) {
             s->dowsing.choices_remaining = 1;  // we got it right
             switch_substate(s, DOWSING_REVEAL_ITEM);
+	    pw_audio_play_sound(SOUND_DOWSING_FOUND_ITEM);
         } else {
+	    pw_audio_play_sound(SOUND_SELECTION_MISS);
 
             pw_screen_draw_from_eeprom(
                 0, SCREEN_HEIGHT-16,

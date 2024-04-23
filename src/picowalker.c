@@ -6,6 +6,7 @@
 #include "picowalker.h"
 #include "buttons.h"
 #include "screen.h"
+#include "audio.h"
 #include "states.h"
 #include "rand.h"
 #include "states.h"
@@ -32,6 +33,7 @@ void walker_setup() {
     pw_ir_init();
     pw_button_init();
     pw_screen_init();
+    pw_audio_init();
     pw_eeprom_init();
     pw_accel_init();
     pw_srand(0x12345678);
@@ -60,6 +62,8 @@ void walker_setup() {
     health_data_cache.last_sync     = swap_bytes_u32(health_data_cache.last_sync);
     health_data_cache.total_days    = swap_bytes_u16(health_data_cache.total_days);
     health_data_cache.current_watts = swap_bytes_u16(health_data_cache.current_watts);
+
+    pw_audio_volume = (health_data_cache.settings&SETTINGS_SOUND_MASK)>>SETTINGS_SOUND_OFFSET;
 
     if(walker_info_cache.flags & WALKER_INFO_FLAG_INIT) {
         current_state->sid = STATE_SPLASH;

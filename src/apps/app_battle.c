@@ -4,6 +4,7 @@
 #include "app_battle.h"
 #include "../states.h"
 #include "../screen.h"
+#include "../audio.h"
 #include "../eeprom_map.h"
 #include "../globals.h"
 #include "../buttons.h"
@@ -124,6 +125,8 @@ void pw_battle_init(pw_state_t *s, const screen_flags_t *sf) {
     s->battle.current_hp = (4<<OUR_HP_OFFSET) | (4<<THEIR_HP_OFFSET);
     s->battle.switch_cursor = 0;
     s->battle.prev_switch_cursor = 0;
+
+    pw_audio_play_sound(SOUND_POKEMON_ENCOUNTER);
 }
 
 /**
@@ -188,10 +191,12 @@ void pw_battle_event_loop(pw_state_t *s, pw_state_t *p, const screen_flags_t *sf
                 case ACTION_EVADE: {
                     substate_queue[0] = BATTLE_STAREDOWN;
                     substate_queue[1] = BATTLE_CHOOSING;
+		    pw_audio_play_sound(SOUND_NAVIGATE_MENU);
                     break;
                 }
                 case ACTION_SPECIAL: {
                     substate_queue[0] = BATTLE_THEY_FLED;
+		    pw_audio_play_sound(SOUND_MINIGAME_FAIL);
                     break;
                 }
                 }
@@ -1027,6 +1032,7 @@ void pw_battle_handle_input(pw_state_t *s, const screen_flags_t *sf, uint8_t b) 
         }
         case BUTTON_M: {
             pw_battle_switch_substate(s, BATTLE_CATCH_SETUP);
+	    pw_audio_play_sound(SOUND_POKEBALL_THROW);
             break;
         }
         }

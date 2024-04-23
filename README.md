@@ -34,7 +34,7 @@ Still to do:
 
 - RTC
 - Battery
-- Sound
+- Play the correct sound in all occasions
 - Pokewalker event logging
 - Random events (eg smiley faces, random watts, pokemon joined etc)
 - Add the animations for send/receive etc.
